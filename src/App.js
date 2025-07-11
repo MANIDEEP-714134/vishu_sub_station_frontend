@@ -71,12 +71,24 @@ const PhaseCard = ({ title, data }) => (
 export default function SubstationDashboard() {
   const [meterData, setMeterData] = useState(null);
 
-  useEffect(() => {
+useEffect(() => {
+  const fetchData = () => {
     axios
-      .get("https://server-substation.onrender.com/data/latest") // replace with your API URL
+      .get("https://server-substation.onrender.com/data/latest")
       .then((res) => setMeterData(res.data))
       .catch((err) => console.error("Error fetching meter data:", err));
-  }, []);
+  };
+
+  // Initial fetch
+  fetchData();
+
+  // Set interval to refresh every 30 seconds (30000 ms)
+  const intervalId = setInterval(fetchData, 500);
+
+  // Clean up interval when component unmounts
+  return () => clearInterval(intervalId);
+}, []);
+
 
   return (
     <div className="container">
